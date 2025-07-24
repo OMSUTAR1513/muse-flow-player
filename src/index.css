@@ -140,11 +140,11 @@ All colors MUST be HSL.
   }
   
   .player-control {
-    @apply p-2 rounded-full hover:bg-hover-bg transition-all duration-200 hover:scale-110;
+    @apply p-2 rounded-full hover:bg-hover transition-all duration-200 hover:scale-110;
   }
   
   .playlist-item {
-    @apply p-3 rounded-lg hover:bg-hover-bg transition-all duration-200 cursor-pointer;
+    @apply p-3 rounded-lg hover:bg-hover transition-all duration-200 cursor-pointer;
   }
   
   .progress-bar {
