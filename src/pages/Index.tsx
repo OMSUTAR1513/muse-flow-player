@@ -29,6 +29,36 @@ const Index = () => {
     }
   }, [playlist.songs.length, playlist.currentIndex, setCurrentIndex])
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Only trigger if not typing in input
+      if (e.target instanceof HTMLInputElement) return
+      
+      switch (e.code) {
+        case 'Space':
+          e.preventDefault()
+          // Toggle play/pause - will be handled by player component
+          break
+        case 'ArrowRight':
+          if (e.metaKey || e.ctrlKey) {
+            e.preventDefault()
+            nextSong()
+          }
+          break
+        case 'ArrowLeft':
+          if (e.metaKey || e.ctrlKey) {
+            e.preventDefault()
+            previousSong()
+          }
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [nextSong, previousSong])
+
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Header */}

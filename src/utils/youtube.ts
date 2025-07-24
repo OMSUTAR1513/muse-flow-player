@@ -49,27 +49,29 @@ export function createSongFromUrl(url: string): Promise<Song> {
       return
     }
 
-    // Create a temporary iframe to get video title
-    const iframe = document.createElement('iframe')
-    iframe.style.display = 'none'
-    iframe.src = `https://www.youtube.com/embed/${videoId}`
-    document.body.appendChild(iframe)
-
-    iframe.onload = () => {
-      // Remove the iframe after a short delay
-      setTimeout(() => {
-        document.body.removeChild(iframe)
-      }, 1000)
-    }
-
-    const song: Song = {
-      id: Date.now().toString(),
-      title: `YouTube Video`, // Will be updated when player loads
-      videoId,
-      thumbnail: getThumbnailUrl(videoId),
-      addedAt: new Date()
-    }
-
-    resolve(song)
+    // Try to get title from YouTube oEmbed API
+    fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
+      .then(response => response.json())
+      .then(data => {
+        const song: Song = {
+          id: Date.now().toString(),
+          title: data.title || `YouTube Video ${videoId.substring(0, 8)}`,
+          videoId,
+          thumbnail: getThumbnailUrl(videoId, 'medium'),
+          addedAt: new Date()
+        }
+        resolve(song)
+      })
+      .catch(() => {
+        // Fallback if oEmbed fails
+        const song: Song = {
+          id: Date.now().toString(),
+          title: `YouTube Video ${videoId.substring(0, 8)}`,
+          videoId,
+          thumbnail: getThumbnailUrl(videoId, 'medium'),
+          addedAt: new Date()
+        }
+        resolve(song)
+      })
   })
 }

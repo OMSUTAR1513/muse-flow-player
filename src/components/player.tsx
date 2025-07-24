@@ -130,10 +130,10 @@ export function Player({
       {/* Hidden YouTube player */}
       <div id="youtube-player" style={{ display: 'none' }} />
       
-      <div className="bg-player border-t p-4 fixed bottom-0 left-0 right-0 z-50">
+      <div className="bg-player border-t p-3 md:p-4 fixed bottom-0 left-0 right-0 z-50">
         <div className="max-w-6xl mx-auto">
           {/* Progress bar */}
-          <div className="mb-4">
+          <div className="mb-3 md:mb-4">
             <Slider
               value={[currentTime]}
               max={playerState.duration || 100}
@@ -148,7 +148,101 @@ export function Player({
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          {/* Mobile Layout */}
+          <div className="block md:hidden">
+            {/* Song info */}
+            <div className="flex items-center gap-3 mb-3">
+              <img
+                src={currentSong.thumbnail}
+                alt={currentSong.title}
+                className="w-12 h-12 rounded object-cover"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="font-medium truncate text-sm">{currentSong.title}</p>
+                <p className="text-xs text-muted-foreground">YouTube Music</p>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="flex items-center justify-center gap-4 mb-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleShuffle}
+                className={`player-control ${isShuffled ? 'text-primary' : ''}`}
+              >
+                <Shuffle className="h-4 w-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onPrevious}
+                className="player-control"
+              >
+                <SkipBack className="h-5 w-5" />
+              </Button>
+
+              <Button
+                onClick={handlePlayPause}
+                disabled={playerState.isLoading}
+                className="btn-spotify w-14 h-14 rounded-full p-0"
+              >
+                {playerState.isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : playerState.isPlaying ? (
+                  <Pause className="h-6 w-6" />
+                ) : (
+                  <Play className="h-6 w-6 ml-0.5" />
+                )}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onNext}
+                className="player-control"
+              >
+                <SkipForward className="h-5 w-5" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleRepeat}
+                className={`player-control ${repeatMode !== 'none' ? 'text-primary' : ''}`}
+              >
+                <RepeatIcon className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Volume */}
+            <div className="flex items-center gap-2 justify-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleMute}
+                className="player-control"
+              >
+                {playerState.isMuted || playerState.volume === 0 ? (
+                  <VolumeX className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
+              </Button>
+              <div className="w-24">
+                <Slider
+                  value={[playerState.isMuted ? 0 : playerState.volume]}
+                  max={100}
+                  step={1}
+                  onValueChange={handleVolumeChange}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden md:flex items-center justify-between">
             {/* Song info */}
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <img
